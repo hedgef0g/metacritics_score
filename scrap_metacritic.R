@@ -1,8 +1,8 @@
-install.packages(tidyverse)  
-install.packages(rvest)    
-install.packages(stringr)   
-install.packages(rebus)     
-install.packages(lubridate)
+install.packages("tidyverse")  
+install.packages("rvest")    
+install.packages("stringr")   
+install.packages("rebus")     
+install.packages("lubridate")
 
 library(tidyverse)  
 library(rvest)    
@@ -10,23 +10,11 @@ library(stringr)
 library(rebus)     
 library(lubridate)
 
-url <- 'https://www.metacritic.com/browse/games/score/userscore/all/all/filtered?view=condensed&sort=desc&page=0'
-
-get_last_page <- function(html){
-  
-  pages_data <- html %>% 
-    # The '.' indicates the class
-    html_nodes('.page last_page') %>% 
-    # Extract the raw text as a list
-    html_text()                   
-  
-  # The second to last of the buttons is the one
-  pages_data[(length(pages_data))] %>%            
-    # Take the raw string
-    unname() %>%                                     
-    # Convert to number
-    as.numeric()                                     
-}
+url <- 'https://www.metacritic.com/browse/games/score/userscore/all/all/filtered?view=condensed&sort=desc&'
 
 first_page <- read_html(url)
-latest_page_number <- get_last_page(first_page)
+latest_page_number <- 162 # define last page manually (probably needs to be automated)
+
+list_of_pages <- str_c(url, 'page=', 0:latest_page_number) # metacritic's filtered results output starts from page 0
+# head(list_of_pages) # check if the resulted URLs are valid (probably needs to be automated)
+
