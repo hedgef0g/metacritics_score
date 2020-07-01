@@ -4,6 +4,7 @@
 #install.packages("stringr")   
 #install.packages("rebus")     
 #install.packages("httr")
+#install.packages("purrr")
 
 library(readr)
 library(dplyr)
@@ -11,8 +12,9 @@ library(rvest)
 library(stringr)   
 library(rebus)     
 library(httr)
+library(purrr)
 
-## Seeting up toolbox
+## Setting up toolbox
 # Getting last page for the exact first letter in the title
 get_last_page <- function(html){
   html %>%
@@ -137,9 +139,12 @@ get_genres <- function(html){
 # Getting permanent link
 links_base <- function(platform) {
   alphabetical_list <- paste("https://www.metacritic.com/browse/games/title/", platform, sep = "")
-  pages_to_parse <- str_replace(sort(paste(alphabetical_list, rep(c("", paste("/", letters)), length(alphabetical_list)), sep = "")),"/ ", "/")
+  for (page in alphabetical_list) {
+    alphabetical_list <- c(alphabetical_list, str_replace(paste(page, rep(c("", paste("/", letters))), sep = ""),"/ ", "/"))
+    alphabetical_list <- sort(unique(alphabetical_list))
+  }
   full_games_list <- c()
-  for (page in pages_to_parse) {
+  for (page in alphabetical_list) {
     link <- read_html(RETRY("GET", url = page, pause_min = 5, times = 100))
     if(length(get_last_page(link)) == 0) {
       full_games_list <- c(full_games_list, page)
@@ -156,8 +161,9 @@ links_base <- function(platform) {
     games <- c(games, get_links(read_html(RETRY("GET", url = page, pause_min = 5, times = 100))))
     print(length(games))
   }
-    ## Получаем полные ссылки на страницы с играми
-  games_full <- str_remove(paste("https://www.metacritic.com", unique(games)), " ")
+  ## Получаем полные ссылки на страницы с играми
+  #games_full <- str_remove(paste("https://www.metacritic.com", unique(games)), " ")
+  games_full <- str_remove(paste("https://www.metacritic.com", games), " ")
   games_full
 }
 # Updating the base (also used to update the base inside parse_games function after the first run) 
@@ -298,22 +304,14 @@ playstation_base <- parse_games(playstation_platforms)
 
 xbox_base <- parse_games(xbox_platforms)
 
-nintendo_base_part1 <- parse_games(nintendo_platforms[1:5000])
-nintendo_base_part2 <- parse_games(nintendo_platforms[5001:length(nintendo_platforms)])
+nintendo_base <- parse_games(nintendo_platforms)
 
-other_base_part1 <- parse_games(other_platforms[1:5000])
-other_base_part2 <- parse_games(other_platforms[5001:length(other_platforms)])
+other_base <- parse_games(other_platforms)
 
 ## Horay! Let's get the complete PC base
-## Это указание на удаление индекса надо будет убрать после соединения, битая ссылка убирается раньше
-pc_base <- rbind(pc_base_part1[-29, 1:11], pc_base_part2, pc_base_part3, pc_base_part4, pc_base_part5, 
+pc_base <- rbind(pc_base_part1, pc_base_part2, pc_base_part3, pc_base_part4, pc_base_part5, 
                  pc_base_part6, pc_base_part7, pc_base_part8, pc_base_part9, pc_base_part10,
                  pc_base_part11)
-
-## And for other platforms as well
-nintendo_base <- rbind(nintendo_base_part1, nintendo_base_part2)
-
-other_base <- rbind(other_base_part1, other_base_part2)
 
 ## Finally! Let's get the complete (well, you know, we can collect every single review as well, but please NO) base
 complete_base <- rbind(pc_base, playstation_base, xbox_base, nintendo_base, other_base)
