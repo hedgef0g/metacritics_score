@@ -317,7 +317,7 @@ pc_base <- rbind(pc_base_part1, pc_base_part2, pc_base_part3, pc_base_part4, pc_
 complete_base <- rbind(pc_base, playstation_base, xbox_base, nintendo_base, other_base)
 complete_base <- update_base(complete_base, all_platforms)
 
-write_tsv(complete_base, "complete_base.csv")
+write_tsv(as.data.frame(complete_base), "complete_base.csv")
 
 ## Delete all info that is not needed anymore
 rm(list = setdiff(ls(), c("complete_base", "all_platforms")))

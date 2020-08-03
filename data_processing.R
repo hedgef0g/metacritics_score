@@ -5,6 +5,7 @@
 # install.packages("ggplot2")
 # install.packages("dbscan")
 # install.packages("zoo")
+# install.packages("string")
 
 library(dplyr)
 library(tidyr)
@@ -13,54 +14,31 @@ library(forcats)
 library(ggplot2)
 library(dbscan)
 library(zoo)
+library(stringr)
 
-base_df <- as_tibble(complete_base)
+# remove <- c("llc", "LLC", "L.L.C", 
+#             "ltd", "Ltd", "LTD", 
+#             "inc", "Inc", "INC",
+#             "[.]$")
 
-base_df <- base_df %>% 
+clean_base <- as_tibble(complete_base) %>% 
   mutate(Platform = as_factor(Platform),
          ReleaseDate = mdy(ReleaseDate),
          UserScore = as.numeric(UserScore),
          UserReviews = as.numeric(UserReviews),
          MetaScore = as.numeric(MetaScore),
-         CriticReviews = as.numeric(CriticReviews),
-         Genres = lapply(str_split(Genres, ", "), unique))
-         
-glimpse(base_df)
-base_df
+         CriticReviews = as.numeric(CriticReviews))
 
-base_df %>%
-  filter(!is.na(UserScore) & !is.na(MetaScore) & year(ReleaseDate) > 2000) %>%
-  mutate(ReleaseDate = year(ReleaseDate)) %>%
-  arrange(ReleaseDate) %>%
-  group_by(ReleaseDate) %>%
-  summarize(corr = cor(UserScore, MetaScore), diff = mean(abs(UserScore - MetaScore/10))) %>%
-  ggplot(aes(x = ReleaseDate, y = diff)) +
-  geom_col() +
-  geom_line(aes(y = corr))
+# i = 1
+# 
+# while(i < nrow(base_df)) {
+#   base_df$Genres[i] <- paste(unique(unlist(str_split(trimws(base_df$Genres[i]), ","))), "", collapse = ",")
+#   i = i + 1
+# }
 
-base_df %>%
-  filter(!is.na(UserScore) & !is.na(MetaScore)) %>%
-  summarize(diff = (UserScore - MetaScore/10)) %>%
-  ggplot(aes(x = diff)) +
-  geom_histogram()
+# number_of_genres <- max(lengths(str_split(base_df$Genres, ", ")))
 
-lev <- base_df %>%
-  filter(!is.na(UserScore) & !is.na(MetaScore)) %>%
-  summarize(diff = abs(UserScore - MetaScore/10)) %>%
-  summarize(3 * sd(diff)) %>%
-  as.numeric()
+# clean_base <- base_df %>%
+#   separate(Genres, c(rep(paste("Genre", 1:number_of_genres))), sep = ",")
 
-controversial <- base_df %>%
-  filter(!is.na(UserScore) & !is.na(MetaScore) & year(ReleaseDate) >= 2000) %>%
-  mutate(diff = abs(UserScore - MetaScore/10)) %>%
-  filter(diff > lev)
-
-main_sample <- base_df %>%
-  filter(!is.na(UserScore) & !is.na(MetaScore) & year(ReleaseDate) >= 2000) %>%
-  mutate(diff = abs(UserScore - MetaScore/10)) %>%
-  filter(diff <= lev) %>%
-  summary()
-
-base_df %>%
-  filter(Platform == "PC") %>%
-  count()
+# rm(list = c("number_of_genres", "i"))
