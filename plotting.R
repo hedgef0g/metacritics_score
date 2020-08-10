@@ -16,10 +16,10 @@ meta_base %>%
   ylim(0, 1) +
   xlim(1996, 2020) +
   theme_classic() +
-  labs(x = "Р“РѕРґ РІС‹С…РѕРґР° РёРіСЂС‹", y = "РљРѕСЂСЂРµР»СЏС†РёСЏ РјРµР¶РґСѓ РѕС†РµРЅРєР°РјРё РєСЂРёС‚РёРєРѕРІ Рё РёРіСЂРѕРєРѕРІ",
-       title ="РќР°СЃРєРѕР»СЊРєРѕ СЃРѕР»РёРґР°СЂРЅС‹ РёРіСЂРѕРІС‹Рµ Р¶СѓСЂРЅР°Р»РёСЃС‚С‹ Рё РёРіСЂРѕРєРё?",
-       subtitle = "РљРѕСЂСЂРµР»СЏС†РёСЏ РјРµР¶РґСѓ РѕС†РµРЅРєР°РјРё РєСЂРёС‚РёРєРѕРІ Рё РёРіСЂРѕРєРѕРІ (Р±Р»РёР¶Рµ Рє 1 = СЃРёР»СЊРЅРµРµ)",
-       caption = "РСЃС‚РѕС‡РЅРёРє РґР°РЅРЅС‹С…: metacritic.com, 24.06.2020") +
+  labs(x = "Год выхода игры", y = "Корреляция между оценками критиков и игроков",
+       title ="Насколько солидарны игровые журналисты и игроки?",
+       subtitle = "Корреляция между оценками критиков и игроков (ближе к 1 = сильнее)",
+       caption = "Источник данных: metacritic.com, 24.06.2020") +
   theme(legend.position="none") 
 
 current_gen <- c("PC", "Xbox One", "Switch", "PlayStation 4")
@@ -28,7 +28,7 @@ meta_base_cor <- meta_base %>%
   mutate(ReleaseDate = year(ReleaseDate)) %>%
   filter(Platform %in% current_gen, ReleaseDate >= 2013) %>%
   group_by(Platform) %>%
-  summarise(correlation = str_c("РљРѕСЂСЂРµР»СЏС†РёСЏ = ", round(cor(UsersScore, CriticsScore),3)))
+  summarise(correlation = str_c("Корреляция = ", round(cor(UsersScore, CriticsScore),3)))
 
 meta_base %>%
   mutate(ReleaseDate = year(ReleaseDate)) %>%
@@ -39,10 +39,10 @@ meta_base %>%
   geom_text(x = 7.5, y = 20, aes(label = correlation), data = meta_base_cor, color = "black") +
   geom_smooth(color = "Light Blue", se = FALSE) +
   theme(legend.position="none") +
-  labs(x = "РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєР°СЏ РѕС†РµРЅРєР°", y = "РћС†РµРЅРєР° РєСЂРёС‚РёРєРѕРІ",
-       title ="РЎРІСЏР·СЊ РјРµР¶РґСѓ РѕС†РµРЅРєР°РјРё РєСЂРёС‚РёРєРѕРІ Рё РёРіСЂРѕРєРѕРІ",
-       subtitle = "Р’ СЂР°Р·СЂРµР·Рµ current gen РїР»Р°С‚С„РѕСЂРј; РёРіСЂС‹ РІС‹С€РµРґС€РёРµ СЃ 2013 РіРѕРґР°",
-       caption = "РСЃС‚РѕС‡РЅРёРє РґР°РЅРЅС‹С…: metacritic.com, 24.06.2020")
+  labs(x = "Пользовательская оценка", y = "Оценка критиков",
+       title ="Связь между оценками критиков и игроков",
+       subtitle = "В разрезе current gen платформ; игры вышедшие с 2013 года",
+       caption = "Источник данных: metacritic.com, 24.06.2020")
 
 ggplot(data = meta_base, aes(x = UsersScore)) +
   geom_histogram(aes(y = stat(count)/sum(count)))+

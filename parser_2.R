@@ -207,7 +207,7 @@ update_base <- function(base, platform) {
 }
 # Getting the base + trying to update skipped games automatically
 parse_games <- function(platform) {
-  base <- matrix(, ncol = 11, nrow = 0)
+  base <- matrix(ncol = 11, nrow = 0)
   colnames(base) <- c("Title", "Platform", "Developer", "Publisher", "ReleaseDate",
                       "UserScore", "UserReviews", "MetaScore", "CriticReviews",
                       "Genres", "permalink")
