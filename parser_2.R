@@ -155,13 +155,13 @@ links_base <- function(platform) {
   }
   games <- c()
   
-  # ĞĞ°Ğ´Ğ¾ Ğ±Ñ‹ Ğ´Ğ¾Ğ±Ğ°Ğ²Ğ¸Ñ‚ÑŒ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºÑƒ Ğ½Ğ° Ğ²Ñ…Ğ¾Ğ¶Ğ´ĞµĞ½Ğ¸Ğµ Ğ¸Ğ³Ñ€Ñ‹ Ğ² ÑĞ¿Ğ¸ÑĞ¾Ğº Ğ¿ĞµÑ€ĞµĞ´ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸ĞµĞ¼
+  # Íàäî áû äîáàâèòü ïğîâåğêó íà âõîæäåíèå èãğû â ñïèñîê ïåğåä ñîõğàíåíèåì
   for (page in full_games_list) {
     print(page)
     games <- c(games, get_links(read_html(RETRY("GET", url = page, pause_min = 5, times = 100))))
     print(length(games))
   }
-  ## ĞŸĞ¾Ğ»ÑƒÑ‡Ğ°ĞµĞ¼ Ğ¿Ğ¾Ğ»Ğ½Ñ‹Ğµ ÑÑÑ‹Ğ»ĞºĞ¸ Ğ½Ğ° ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ñ‹ Ñ Ğ¸Ğ³Ñ€Ğ°Ğ¼Ğ¸
+  ## Ïîëó÷àåì ïîëíûå ññûëêè íà ñòğàíèöû ñ èãğàìè
   #games_full <- str_remove(paste("https://www.metacritic.com", unique(games)), " ")
   games_full <- str_remove(paste("https://www.metacritic.com", games), " ")
   games_full

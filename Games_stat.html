@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>body{background-color:white;}</style>
+
+
+</head>
+<body>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#pdarjzbfal .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pdarjzbfal .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pdarjzbfal .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pdarjzbfal .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pdarjzbfal .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pdarjzbfal .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pdarjzbfal .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pdarjzbfal .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pdarjzbfal .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pdarjzbfal .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pdarjzbfal .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pdarjzbfal .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pdarjzbfal .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pdarjzbfal .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#pdarjzbfal .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdarjzbfal .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pdarjzbfal .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pdarjzbfal .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pdarjzbfal .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pdarjzbfal .gt_left {
+  text-align: left;
+}
+
+#pdarjzbfal .gt_center {
+  text-align: center;
+}
+
+#pdarjzbfal .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pdarjzbfal .gt_font_normal {
+  font-weight: normal;
+}
+
+#pdarjzbfal .gt_font_bold {
+  font-weight: bold;
+}
+
+#pdarjzbfal .gt_font_italic {
+  font-style: italic;
+}
+
+#pdarjzbfal .gt_super {
+  font-size: 65%;
+}
+
+#pdarjzbfal .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="pdarjzbfal" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="6" class="gt_heading gt_title gt_font_normal" style>Число оценённых игр на каждой из платформ</th>
+    </tr>
+    <tr>
+      <th colspan="6" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Кол-во игр</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">С оценкой критиков</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">С оценкой пользователей</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">С 2-мя оценками</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">Доля игр с 2-мя оценками, %</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <td colspan="6" class="gt_group_heading">Other</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Dreamcast</td>
+      <td class="gt_row gt_center">143</td>
+      <td class="gt_row gt_center">143</td>
+      <td class="gt_row gt_center">136</td>
+      <td class="gt_row gt_center">136</td>
+      <td class="gt_row gt_right">95</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PC</td>
+      <td class="gt_row gt_center">51287</td>
+      <td class="gt_row gt_center">6023</td>
+      <td class="gt_row gt_center">10105</td>
+      <td class="gt_row gt_center">5509</td>
+      <td class="gt_row gt_right">11</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">iOS</td>
+      <td class="gt_row gt_center">11733</td>
+      <td class="gt_row gt_center">3326</td>
+      <td class="gt_row gt_center">1376</td>
+      <td class="gt_row gt_center">1071</td>
+      <td class="gt_row gt_right">9</td>
+    </tr>
+    <tr class="gt_group_heading_row">
+      <td colspan="6" class="gt_group_heading">Nintendo</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Nintendo 64</td>
+      <td class="gt_row gt_center">94</td>
+      <td class="gt_row gt_center">89</td>
+      <td class="gt_row gt_center">94</td>
+      <td class="gt_row gt_center">89</td>
+      <td class="gt_row gt_right">95</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">GameCube</td>
+      <td class="gt_row gt_center">545</td>
+      <td class="gt_row gt_center">512</td>
+      <td class="gt_row gt_center">468</td>
+      <td class="gt_row gt_center">451</td>
+      <td class="gt_row gt_right">83</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Game Boy Advance</td>
+      <td class="gt_row gt_center">772</td>
+      <td class="gt_row gt_center">600</td>
+      <td class="gt_row gt_center">469</td>
+      <td class="gt_row gt_center">418</td>
+      <td class="gt_row gt_right">54</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">3DS</td>
+      <td class="gt_row gt_center">1264</td>
+      <td class="gt_row gt_center">546</td>
+      <td class="gt_row gt_center">555</td>
+      <td class="gt_row gt_center">453</td>
+      <td class="gt_row gt_right">36</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Wii</td>
+      <td class="gt_row gt_center">2029</td>
+      <td class="gt_row gt_center">875</td>
+      <td class="gt_row gt_center">1016</td>
+      <td class="gt_row gt_center">718</td>
+      <td class="gt_row gt_right">35</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Wii U</td>
+      <td class="gt_row gt_center">780</td>
+      <td class="gt_row gt_center">320</td>
+      <td class="gt_row gt_center">347</td>
+      <td class="gt_row gt_center">269</td>
+      <td class="gt_row gt_right">34</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Switch</td>
+      <td class="gt_row gt_center">4145</td>
+      <td class="gt_row gt_center">1582</td>
+      <td class="gt_row gt_center">1532</td>
+      <td class="gt_row gt_center">1239</td>
+      <td class="gt_row gt_right">30</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">DS</td>
+      <td class="gt_row gt_center">2343</td>
+      <td class="gt_row gt_center">987</td>
+      <td class="gt_row gt_center">767</td>
+      <td class="gt_row gt_center">662</td>
+      <td class="gt_row gt_right">28</td>
+    </tr>
+    <tr class="gt_group_heading_row">
+      <td colspan="6" class="gt_group_heading">Microsoft</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Xbox</td>
+      <td class="gt_row gt_center">861</td>
+      <td class="gt_row gt_center">838</td>
+      <td class="gt_row gt_center">690</td>
+      <td class="gt_row gt_center">682</td>
+      <td class="gt_row gt_right">79</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Xbox 360</td>
+      <td class="gt_row gt_center">2942</td>
+      <td class="gt_row gt_center">1833</td>
+      <td class="gt_row gt_center">2136</td>
+      <td class="gt_row gt_center">1727</td>
+      <td class="gt_row gt_right">59</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Xbox One</td>
+      <td class="gt_row gt_center">4187</td>
+      <td class="gt_row gt_center">1676</td>
+      <td class="gt_row gt_center">1685</td>
+      <td class="gt_row gt_center">1304</td>
+      <td class="gt_row gt_right">31</td>
+    </tr>
+    <tr class="gt_group_heading_row">
+      <td colspan="6" class="gt_group_heading">Sony</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PlayStation 2</td>
+      <td class="gt_row gt_center">1827</td>
+      <td class="gt_row gt_center">1531</td>
+      <td class="gt_row gt_center">1511</td>
+      <td class="gt_row gt_center">1382</td>
+      <td class="gt_row gt_right">76</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PlayStation</td>
+      <td class="gt_row gt_center">289</td>
+      <td class="gt_row gt_center">256</td>
+      <td class="gt_row gt_center">225</td>
+      <td class="gt_row gt_center">203</td>
+      <td class="gt_row gt_right">70</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PSP</td>
+      <td class="gt_row gt_center">1020</td>
+      <td class="gt_row gt_center">607</td>
+      <td class="gt_row gt_center">568</td>
+      <td class="gt_row gt_center">509</td>
+      <td class="gt_row gt_right">50</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PlayStation 3</td>
+      <td class="gt_row gt_center">3131</td>
+      <td class="gt_row gt_center">1478</td>
+      <td class="gt_row gt_center">1935</td>
+      <td class="gt_row gt_center">1400</td>
+      <td class="gt_row gt_right">45</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PlayStation 4</td>
+      <td class="gt_row gt_center">5404</td>
+      <td class="gt_row gt_center">2312</td>
+      <td class="gt_row gt_center">2880</td>
+      <td class="gt_row gt_center">2127</td>
+      <td class="gt_row gt_right">39</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">PlayStation Vita</td>
+      <td class="gt_row gt_center">1709</td>
+      <td class="gt_row gt_center">409</td>
+      <td class="gt_row gt_center">634</td>
+      <td class="gt_row gt_center">390</td>
+      <td class="gt_row gt_right">23</td>
+    </tr>
+  </tbody>
+  <tfoot class="gt_sourcenotes">
+    <tr>
+      <td class="gt_sourcenote" colspan="6">Источник данных: metacritic.com, 01.07.2020</td>
+    </tr>
+  </tfoot>
+  
+</table></div>
+</body>
+</html>

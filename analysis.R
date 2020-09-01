@@ -5,6 +5,8 @@ install.packages("stringr")
 install.packages("ggplot2")
 install.packages("lubridate")
 install.packages("gridExtra")
+install.packages("ggpubr")
+install.packages("nortest")
 
 library(gt)
 library(textcat)
@@ -12,6 +14,7 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 library(lubridate)
+library(ggpubr)
 
 clean_base %>%
   group_by(Platform) %>%
@@ -199,7 +202,7 @@ scores_summary
 
 vlines <- both_scores %>%
   mutate(ReleaseDate = year(ReleaseDate)) %>%
-  summarize(mMS = mean(MetaScore), mUS = mean(UserScore))
+  summarize(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews))
 
 ## Meta and User scores - Total
 png(filename = "scores.png", width = 900, height = 500)
@@ -223,42 +226,44 @@ both_scores %>%
 dev.off()
 
 ## Plotting scores with low number of reviews
-ggplot() +
-  geom_histogram(data = filter(clean_base, CriticReviews < 8), alpha = 0.4, aes(x = MetaScore, y = ..density.., fill = "r"), binwidth = 1) +
-  geom_histogram(data = filter(clean_base, UserReviews < 11), alpha = 0.4, aes(x = UserScore * 10, y = ..density.., fill = "b"), binwidth = 1) +
+png(filename = "scores_small_scale.png", width = 900, height = 500)
+ggplot(both_scores) +
+  geom_histogram(alpha = 0.4, aes(x = MetaScore, y = ..density.., fill = "r"), binwidth = 1) +
+  geom_histogram(alpha = 0.4, aes(x = UserScore * 10, y = ..density.., fill = "b"), binwidth = 1) +
   scale_fill_manual(name ="scores", values = c("r" = "#F8766D", "b" = "#00BFC4"), labels = c("b" = "Пользователи", "r" = "Критики")) +
   scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = seq(0, 100, by = 5), labels = seq(0, 100, by = 5)) +
+  geom_vline(data = vlines, aes(xintercept = mMS), color = "#F8766D") +
+  geom_vline(data = vlines, aes(xintercept = mUS * 10), color = "#00BFC4") +
+  geom_label(data = vlines, aes(label = as.integer(mMS), x = mMS + 5, y = 0.04), color = "#F8766D", size = 5) +
+  geom_label(data = vlines, aes(label = as.integer(mUS * 10), x = (mUS * 10) - 5, y = 0.04), color = "#00BFC4", size = 5) +
   labs(x = "Оценка по 100-балльной шкале", y = "Доля оценок",
        title = "Распределение пользовательских оценок и оценок профильной прессы",
        subtitle = "Вне зависимости от года выхода игры",
        caption = "Источник данных: metacritic.com, 01.07.2020") +
   guides(fill = guide_legend(title = "Источник оценки:")) +
-  theme(text = element_text(size = 16)) +
-  geom_vline(xintercept = seq(0, 100, by = 5), color = "red", alpha = 0.3)
+  theme(text = element_text(size = 16),
+        panel.grid.minor.x = element_blank()) 
+dev.off()
 
-## Compare scores with low number of reviews
-clean_base %>%
-  filter(CriticReviews < 8) %>%
-  summarize(mMS = mean(MetaScore, na.rm = TRUE), sdMS = sd(MetaScore, na.rm = TRUE))
+## Compare scores - paired t-test
 
-clean_base %>%
-  filter(CriticReviews > 4) %>%
-  summarize(mMS = mean(MetaScore, na.rm = TRUE), sdMS = sd(MetaScore, na.rm = TRUE))
+t.test(x = both_scores$UserScore * 10,
+       y = both_scores$MetaScore,  
+       paired = TRUE)
 
-clean_base %>%
-  filter(UserReviews < 11) %>%
-  summarize(mUS = mean(UserScore, na.rm = TRUE), sdUS = sd(UserScore, na.rm = TRUE))
+ggplot(data = both_scores) +
+  geom_boxplot(aes(x = 1, y = MetaScore)) +
+  geom_boxplot(aes(x = 2, y = UserScore * 10))
 
-clean_base %>%
-  filter(UserReviews > 4) %>%
-  summarize(mUS = mean(UserScore, na.rm = TRUE), sdUS = sd(UserScore, na.rm = TRUE))
+summary(both_scores)
 
 ## Meta and User scores by year
 vlines <- both_scores %>%
   mutate(ReleaseDate = year(ReleaseDate)) %>%
   filter(ReleaseDate >= 2001) %>%
   group_by(ReleaseDate) %>%
-  summarize(mMS = mean(MetaScore), mUS = mean(UserScore))
+  summarize(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews))
 
 png(filename = "scores_by_year.png", width = 900, height = 500)
 both_scores %>%
@@ -285,7 +290,7 @@ dev.off()
 ## Meta and User scores by platform
 vlines <- both_scores %>%
   group_by(Platform) %>%
-  summarize(mMS = mean(MetaScore), mUS = mean(UserScore))
+  summarize(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews))
 
 png(filename = "scores_by_platform.png", width = 900, height = 500)
 both_scores %>%
@@ -312,17 +317,18 @@ rm(vlines)
 ## How scores changed since 2000
 png(filename = "change_in_means.png", width = 900, height = 500)
 both_scores %>%
-  group_by(year = year(ReleaseDate)) %>%
+  mutate(year = year(ReleaseDate)) %>%
   filter(year >= 2000) %>%
-  summarise(mMS = mean(MetaScore), mUS = mean(UserScore)) %>%
+  group_by(year) %>%
+  summarise(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews)) %>%
   ggplot(aes(x = year)) + 
   geom_col(aes(y = mMS, fill = "r"), alpha = 0.4) +
   geom_col(aes(y = mUS * 10, fill = "b"), alpha = 0.4) +
   scale_fill_manual(name ="scores", values = c("r" = "#F8766D", "b" = "#00BFC4"), labels = c("b" = "Пользователи", "r" = "Критики")) +
-  geom_hline(aes(yintercept = mean(filter(both_scores, year(ReleaseDate) >= 2000)$MetaScore)), color = "#F8766D", size = 2) +
-  geom_hline(aes(yintercept = mean(filter(both_scores, year(ReleaseDate) >= 2000)$UserScore) * 10), color = "#00BFC4", size = 2) +
-  geom_label(aes(label = as.integer(mMS), x = year, y = 78), fill = "#F8766D", alpha = 0.2) +
-  geom_label(aes(label = as.integer(mUS * 10), x = year, y = 60), fill = "#00BFC4", alpha = 0.2) +
+  geom_hline(aes(yintercept = weighted.mean(both_scores$MetaScore, both_scores$CriticReviews)), color = "#F8766D", size = 2) +
+  geom_hline(aes(yintercept = weighted.mean(both_scores$UserScore, both_scores$UserReviews) * 10), color = "#00BFC4", size = 2) +
+  geom_label(aes(label = as.integer(mMS), x = year, y = 95), fill = "#F8766D", alpha = 0.2) +
+  geom_label(aes(label = as.integer(mUS * 10), x = year, y = 100), fill = "#00BFC4", alpha = 0.2) +
   labs(x = "Год", y = "Средняя оценка",
        title = "Изменение средних оценок пользователей и критиков в зависимости от года релиза игры",
        subtitle = "В период с 2000 по 2020 гг",
@@ -331,12 +337,6 @@ both_scores %>%
   theme(text = element_text(size = 16))
 dev.off()
 
-both_scores %>%
-  group_by(year(ReleaseDate)) %>%
-  summarize(mean(MetaScore), mean(UserScore) * 10)
-
-mean(both_scores$MetaScore)
-
 ## How the correlation changes since 2000
 png(filename = "change_in_correlation.png", width = 900, height = 500)
 both_scores %>%
@@ -344,13 +344,132 @@ both_scores %>%
   filter(ReleaseDate >= 2000) %>%
   group_by(ReleaseDate) %>%
   summarise(correlation = cor(UserScore, MetaScore)) %>%
-  mutate(meancor = mean(correlation), sdcor = sd(correlation)) %>%
   ggplot(aes(x = ReleaseDate, y = correlation, fill = correlation)) +
   geom_col() +
+  geom_hline(aes(yintercept = cor(both_scores$UserScore, both_scores$MetaScore)), size = 1, color = "Grey") +
+  geom_label(aes(x = ReleaseDate, y = correlation + 0.05, label = round(correlation, 3)), fill = "White") +
   ylim(0, 1) +
   labs(x = "Год выхода игры", y = "Корреляция между оценками критиков и игроков",
        title ="Насколько солидарны игровые журналисты и игроки?",
        subtitle = "Корреляция между оценками критиков и игроков (ближе к 1 = сильнее)",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+dev.off()
+
+## Scores and correlation without outliers (by # of reviews)
+png(filename = "number_of_scores.png", width = 900, height = 500)
+both_scores %>%
+  arrange(desc(UserReviews)) %>%
+  ggplot() +
+  geom_point(aes(x = CriticReviews, y = UserReviews, alpha = 0.3), position = "jitter") +
+  geom_label(aes(label = Title[1], x = CriticReviews[1], y = 100000)) +
+  geom_label(aes(label = Title[2], x = CriticReviews[2], y = 25000)) +
+  labs(x = "Число оценок критиков", y = "Число оценок игроков",
+       title = "Число оценок критиков vs Число оценок игроков",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+dev.off()
+
+both_scores %>%
+  arrange(desc(UserReviews)) %>%
+  select(Title, Platform, ReleaseDate, UserScore, UserReviews, MetaScore, CriticReviews) %>%
+  head(10) %>%
+  rename("Название" = Title, "Платформа" = Platform, "Дата выхода" = ReleaseDate,
+         "Оценка игроков" = UserScore, "Число оценок игроков" = UserReviews,
+         "Оценка критиков" = MetaScore, "Число обзоров" = CriticReviews) %>%
+  gt() %>%
+  tab_header(
+    title = md("Топ-10 игр по числу пользовательских оценок")
+  ) %>%
+  tab_source_note(md("Источник данных: metacritic.com, 01.07.2020"))
+
+png(filename = "mean_scores_cleaned_1.png", width = 900, height = 500)
+both_scores %>%
+  mutate(year = year(ReleaseDate)) %>%
+  filter(year >= 2000 & UserReviews < 30000) %>%
+  group_by(year) %>%
+  summarise(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews)) %>%
+  ggplot(aes(x = year)) + 
+  geom_col(aes(y = mMS, fill = "r"), alpha = 0.4) +
+  geom_col(aes(y = mUS * 10, fill = "b"), alpha = 0.4) +
+  scale_fill_manual(name ="scores", values = c("r" = "#F8766D", "b" = "#00BFC4"), labels = c("b" = "Пользователи", "r" = "Критики")) +
+  geom_hline(aes(yintercept = weighted.mean(both_scores$MetaScore, both_scores$CriticReviews)), color = "#F8766D", size = 2) +
+  geom_hline(aes(yintercept = weighted.mean(both_scores$UserScore * 10, both_scores$UserReviews)), color = "#00BFC4", size = 2) +
+  geom_label(aes(label = as.integer(mMS), x = year, y = 95), fill = "#F8766D", alpha = 0.2) +
+  geom_label(aes(label = as.integer(mUS * 10), x = year, y = 100), fill = "#00BFC4", alpha = 0.2) +
+  labs(x = "Год", y = "Средняя оценка",
+       title = "Изменение средних оценок пользователей и критиков в зависимости от года релиза игры",
+       subtitle = "В период с 2000 по 2020 гг, за исключением W3:Reforged и TLoU.P2",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  guides(fill = guide_legend(title = "Источник оценки:")) +
+  theme(text = element_text(size = 16))
+dev.off()
+
+png(filename = "correlations_cleaned_1.png", width = 900, height = 500)
+both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate)) %>%
+  filter(ReleaseDate >= 2000 & UserReviews < 30000) %>%
+  group_by(ReleaseDate) %>%
+  summarise(correlation = cor(UserScore, MetaScore)) %>%
+  mutate(meancor = mean(correlation), sdcor = sd(correlation)) %>%
+  ggplot(aes(x = ReleaseDate, y = correlation, fill = correlation)) +
+  geom_col() +
+  geom_hline(aes(yintercept = mean(correlation)), size = 1, color = "Grey") +
+  geom_label(aes(x = ReleaseDate, y = correlation + 0.05, label = round(correlation, 3)), fill = "White") +
+  ylim(0, 1) +
+  labs(x = "Год выхода игры", y = "Корреляция между оценками критиков и игроков",
+       title ="Насколько солидарны игровые журналисты и игроки?",
+       subtitle = "Корреляция между оценками критиков и игроков (ближе к 1 = сильнее)",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  theme(legend.position = "none",
+        text = element_text(size = 16))
+dev.off()
+
+without_US_outliers <- both_scores %>%
+  filter(UserReviews < as.numeric(summary(both_scores$UserReviews)[5]) + 96)
+
+nrow(without_US_outliers)
+nrow(both_scores) - nrow(without_US_outliers)
+
+png(filename = "mean_scores_cleaned_2.png", width = 900, height = 500)
+without_US_outliers %>%
+  mutate(year = year(ReleaseDate)) %>%
+  filter(year >= 2000) %>%
+  group_by(year) %>%
+  summarise(mMS = weighted.mean(MetaScore, CriticReviews), mUS = weighted.mean(UserScore, UserReviews)) %>%
+  ggplot(aes(x = year)) + 
+  geom_col(aes(y = mMS, fill = "r"), alpha = 0.4) +
+  geom_col(aes(y = mUS * 10, fill = "b"), alpha = 0.4) +
+  scale_fill_manual(name ="scores", values = c("r" = "#F8766D", "b" = "#00BFC4"), labels = c("b" = "Пользователи", "r" = "Критики")) +
+  geom_hline(aes(yintercept = mean(filter(without_US_outliers, year(ReleaseDate) >= 2000)$MetaScore)), color = "#F8766D", size = 2) +
+  geom_hline(aes(yintercept = mean(filter(without_US_outliers, year(ReleaseDate) >= 2000)$UserScore) * 10), color = "#00BFC4", size = 2) +
+  geom_label(aes(label = as.integer(mMS), x = year, y = 95), fill = "#F8766D", alpha = 0.2) +
+  geom_label(aes(label = as.integer(mUS * 10), x = year, y = 100), fill = "#00BFC4", alpha = 0.2) +
+  labs(x = "Год", y = "Средняя оценка",
+       title = "Изменение средних оценок пользователей и критиков в зависимости от года релиза игры",
+       subtitle = "В период с 2000 по 2020 гг, без учёта игр с большим числом пользовательских обзоров",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  guides(fill = guide_legend(title = "Источник оценки:")) +
+  theme(text = element_text(size = 16))
+dev.off()
+
+png(filename = "correlations_cleaned_2.png", width = 900, height = 500)
+without_US_outliers %>%
+  mutate(ReleaseDate = year(ReleaseDate)) %>%
+  filter(ReleaseDate >= 2000) %>%
+  group_by(ReleaseDate) %>%
+  summarise(correlation = cor(UserScore, MetaScore)) %>%
+  mutate(meancor = mean(correlation), sdcor = sd(correlation)) %>%
+  ggplot(aes(x = ReleaseDate, y = correlation, fill = correlation)) +
+  geom_col() +
+  geom_hline(aes(yintercept = mean(correlation)), size = 1, color = "Grey") +
+  geom_label(aes(x = ReleaseDate, y = correlation + 0.05, label = round(correlation, 3)), fill = "White") +
+  ylim(0, 1) +
+  labs(x = "Год выхода игры", y = "Корреляция между оценками критиков и игроков",
+       title ="Насколько солидарны игровые журналисты и игроки?",
+       subtitle = "Корреляция между оценками критиков и игроков (ближе к 1 = сильнее),\nбез учёта игр с большим числом пользовательских обзоров",
        caption = "Источник данных: metacritic.com, 01.07.2020") +
   theme(legend.position = "none",
         text = element_text(size = 16))
@@ -380,6 +499,12 @@ diff_plot +
         text = element_text(size = 16))
 dev.off()
 
+Diff <- unlist(both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate), Diff = UserScore * 10 - MetaScore) %>%
+  select(Diff))
+
+nortest::pearson.test(Diff)
+
 png(filename = "diffrence_by_year.png", width = 900, height = 500)
 diff_plot +
   facet_wrap(~ ReleaseDate) +
@@ -387,6 +512,22 @@ diff_plot +
      title = "Распределение разницы в оценках игроков и критиков",
      subtitle = "В зависимости от года выхода игры",
      caption = "Источник данных: metacritic.com, 01.07.2020") +
+  theme(legend.position = "none",
+        text = element_text(size = 16)) 
+dev.off()
+
+png(filename = "mean_diffrence_by_year.png", width = 900, height = 500)
+both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate), Diff = (UserScore * 10 - MetaScore)) %>%
+  filter(ReleaseDate >= 2001) %>%
+  group_by(ReleaseDate) %>%
+  summarize(Diff = mean(Diff)) %>%
+  ggplot() +
+  geom_col(aes(x = ReleaseDate, y = Diff, fill = Diff)) +
+  labs(x = "Год выхода игры", y = "Средняя разница в оценках",
+       title = "Распределение разницы в оценках игроков и критиков",
+       subtitle = "Усредненное отличие за год",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
   theme(legend.position = "none",
         text = element_text(size = 16)) 
 dev.off()
@@ -400,6 +541,31 @@ diff_plot +
        caption = "Источник данных: metacritic.com, 01.07.2020") +
   theme(legend.position = "none",
         text = element_text(size = 16)) 
+dev.off()
+
+both_scores_cor <- both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate)) %>%
+  filter(Platform %in% c("PC", "Xbox One", "Switch", "PlayStation 4", "iOS"), ReleaseDate >= 2013) %>%
+  group_by(Platform) %>%
+  summarise(correlation = str_c("Корреляция = ", round(cor(UserScore, MetaScore), 3)))
+
+current_gen <- c("PC", "Xbox One", "Switch", "PlayStation 4", "iOS")
+
+png(filename = "correlation_current_gen.png", width = 900, height = 500)
+both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate)) %>%
+  filter(Platform %in% current_gen, ReleaseDate >= 2013) %>%
+  ggplot(aes(x = UserScore, y = MetaScore, alpha = 0.1, color = Platform)) +
+  geom_point() + 
+  facet_wrap(Platform ~ .) +
+  geom_text(x = 7.5, y = 20, aes(label = correlation), data = both_scores_cor, color = "black") +
+  geom_smooth(color = "Light Blue", se = FALSE) +
+  theme(legend.position = "none",
+        text = element_text(size = 16)) +
+  labs(x = "Пользовательская оценка", y = "Оценка критиков",
+       title ="Связь между оценками критиков и игроков",
+       subtitle = "В разрезе current gen платформ; игры вышедшие с 2013 года",
+       caption = "Источник данных: metacritic.com, 01.07.2020")
 dev.off()
 
 top_publishers <- both_scores %>%
