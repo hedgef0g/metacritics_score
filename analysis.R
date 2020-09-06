@@ -532,6 +532,23 @@ both_scores %>%
         text = element_text(size = 16)) 
 dev.off()
 
+png(filename = "abs_difference_by_platform.png", width = 900, height = 500)
+both_scores %>%
+  mutate(ReleaseDate = year(ReleaseDate), Diff = (UserScore * 10 - MetaScore)) %>%
+  group_by(Platform) %>%
+  summarize(Diff = mean(Diff)) %>%
+  arrange(desc(Diff)) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(Platform, -Diff), y = Diff, fill = Diff)) +
+  labs(x = "", y = "Средняя разница в оценках",
+       title = "Распределение разницы в оценках игроков и критиков",
+       subtitle = "Усредненное отличие оценок на платформе",
+       caption = "Источник данных: metacritic.com, 01.07.2020") +
+  theme(legend.position = "none",
+        text = element_text(size = 16),
+        axis.text.x = element_text(angle = 90)) 
+dev.off()
+
 png(filename = "difference_by_platform.png", width = 900, height = 500)
 diff_plot +
   facet_wrap(~ Platform) +
@@ -582,15 +599,3 @@ both_scores %>%
   ggplot() +
   geom_histogram(aes(x = Diff, y = ..density..)) +
   facet_wrap(~ Publisher)
-
-both_scores %>%
-  mutate(Diff = UserScore * 10 - MetaScore) %>%
-  summary()
-
-Diff_criteria = (6 - (-9)) * 1.5
-
-both_scores %>%
-  mutate(Diff = UserScore * 10 - MetaScore, outlier = (Diff < -Diff_criteria | Diff > Diff_criteria)) %>%
-  filter(outlier) %>%
-  ggplot(aes(x = UserScore * 10, y = MetaScore)) +
-  geom_point()
